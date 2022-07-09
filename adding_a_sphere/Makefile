@@ -1,3 +1,5 @@
+default: all
+
 debug: main.cpp
 	g++ -std=c++17 -fdiagnostics-color=always -g -I .. main.cpp
 
@@ -7,6 +9,7 @@ all: main.cpp
 run: all
 	./sphere > a.ppm
 
-clean:
+.PHONY:clean
+clean: 
 	-rm sphere a.ppm a.out
 	-rm -r a.out.dSYM
