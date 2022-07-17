@@ -1,18 +1,21 @@
 #pragma once
 
+#include <memory>
+
 #include "utility/hittable.h"
 #include "utility/vec3.h"
 
 class Sphere : public Hittable {
  public:
   Sphere() {}
-  Sphere(const Point3& center, double radius)
-      : center_(center), radius_(radius) {}
+  Sphere(const Point3& center, double radius, shared_ptr<Material> material)
+      : center_(center), radius_(radius), material_(material) {}
   bool hit(const Ray& r, double t_min, double t_max,
            HitRecord* rec) const override;
 
   Point3 center_;
   double radius_;
+  std::shared_ptr<Material> material_;
 };
 
 bool Sphere::hit(const Ray& r, double t_min, double t_max,
@@ -36,6 +39,8 @@ bool Sphere::hit(const Ray& r, double t_min, double t_max,
     hit_record->p = r.At(root);
     auto outward_normal = (hit_record->p - center_) / radius_;
     hit_record->SetFaceNormal(r, outward_normal);
+    hit_record->material = material_;
+
     return true;
   }
   return false;
