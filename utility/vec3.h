@@ -106,4 +106,6 @@ inline Vec3 unit_vector(Vec3 v) { return v / v.Length(); }
 
 Vec3 random_unit_vector() { return unit_vector(random_in_unit_sphere()); }
 
+Vec3 reflect(const Vec3& v, const Vec3& n) { return v - 2 * dot(v, n) * n; }
+
 #pragma endregion
