@@ -54,16 +54,6 @@ int main() {
   // Camera
   Camera camera;
 
-  auto viewport_height = 2.0;
-  auto viewport_width = aspect_ratio * viewport_height;
-  auto focal_length = 1.0;
-
-  auto origin = Point3(0, 0, 0);
-  auto horizontal = Vec3(viewport_width, 0, 0);
-  auto vertical = Vec3(0, viewport_height, 0);
-  auto lower_left_corner =
-      origin - horizontal / 2 - vertical / 2 - Vec3(0, 0, focal_length);
-
   // Render
   std::cout << "P3\n" << image_width << ' ' << image_height << "\n255\n";
 
