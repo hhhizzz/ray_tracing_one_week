@@ -92,7 +92,7 @@ int main() {
 
   std::vector<Color> color_buffer(image_width * image_height);
 
-  BS::thread_pool pool(std::thread::hardware_concurrency() - 9);
+  BS::thread_pool pool(1);
 
   std::atomic_uint32_t line_count(0);
 
