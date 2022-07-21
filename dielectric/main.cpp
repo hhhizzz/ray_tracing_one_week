@@ -39,7 +39,7 @@ void render(std::vector<Color>* color_buffer, int j, const int image_width,
             std::atomic_uint32_t* line_count, BS::synced_stream* out) {
   BS::timer tmr;
   tmr.start();
-  for (int i = 0; i <= image_width; ++i) {
+  for (int i = 0; i < image_width; ++i) {
     Color pixel_color(0, 0, 0);
     for (int s = 0; s < samples_per_pixel; ++s) {
       auto u = (i + random_double()) / (image_width - 1);
@@ -103,12 +103,9 @@ int main() {
 
   std::vector<std::thread> threads;
 
-  for (int j = 0; j <= image_height; ++j) {
-
-    pool.push_task(render, &color_buffer, j, image_width, image_height,
-    camera,
-                   samples_per_pixel, world, max_depth, &line_count,
-                   &sync_out);
+  for (int j = 0; j < image_height; ++j) {
+    pool.push_task(render, &color_buffer, j, image_width, image_height, camera,
+                   samples_per_pixel, world, max_depth, &line_count, &sync_out);
   }
   pool.wait_for_tasks();
 
