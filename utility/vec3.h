@@ -108,4 +108,11 @@ Vec3 random_unit_vector() { return unit_vector(random_in_unit_sphere()); }
 
 Vec3 reflect(const Vec3& v, const Vec3& n) { return v - 2 * dot(v, n) * n; }
 
+Vec3 refract(const Vec3& uv, const Vec3& n, double etai_over_etat) {
+  auto cos_theta = fmin(dot(-uv, n), 1.0f);
+  Vec3 r_out_parallel = etai_over_etat * (uv + cos_theta * n);
+  Vec3 r_out_perp = -sqrt(fabs(1.0f - r_out_parallel.LengthSquared())) * n;
+  return r_out_parallel + r_out_perp;
+}
+
 #pragma endregion
