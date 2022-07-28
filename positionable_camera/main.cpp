@@ -109,8 +109,17 @@ int main() {
   Vec3 v_up(0, 1, 0);
   auto dist_to_focus = 10.0;
   auto aperture = 0.1;
+  auto v_fov = 20.0;
 
-  Camera camera(look_from, look_at, v_up, 20.0, aspect_ratio, aperture,
+  if (const char* env_p = std::getenv("aperture")) {
+    aperture = std::stof(env_p);
+  }
+
+  if (const char* env_p = std::getenv("v_fov")) {
+    v_fov = std::stof(env_p);
+  }
+
+  Camera camera(look_from, look_at, v_up, 90.0, aspect_ratio, aperture,
                 dist_to_focus);
 
   // Render
