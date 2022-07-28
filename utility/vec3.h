@@ -10,11 +10,11 @@ class Vec3 {
   Vec3() : e_{0, 0, 0} {}
   Vec3(double e0, double e1, double e2) : e_{e0, e1, e2} {}
 
-  static Vec3 random() {
+  static Vec3 Random() {
     return Vec3(random_double(), random_double(), random_double());
   }
 
-  static Vec3 random(double min, double max) {
+  static Vec3 Random(double min, double max) {
     return Vec3(random_double(min, max), random_double(min, max),
                 random_double(min, max));
   }
@@ -62,7 +62,15 @@ using Color = Vec3;
 // Vec3 Utility Functions
 Vec3 random_in_unit_sphere() {
   while (true) {
-    auto p = Vec3::random(-1, 1);
+    auto p = Vec3::Random(-1, 1);
+    if (p.LengthSquared() >= 1) continue;
+    return p;
+  }
+}
+
+Vec3 random_in_unit_disk() {
+  while (true) {
+    auto p = Vec3(random_double(-1, 1), random_double(-1, 1), 0);
     if (p.LengthSquared() >= 1) continue;
     return p;
   }

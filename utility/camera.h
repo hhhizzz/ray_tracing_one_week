@@ -4,22 +4,32 @@
 
 class Camera {
  public:
-  Camera() {
-    auto aspect_ratio = 16.0 / 9.0;
-    auto viewport_height = 2.0;
+  Camera(Point3 look_from, Point3 look_at, Vec3 v_up, double v_fov,
+         double aspect_ratio, double aperture, double focus_dist) {
+    auto theta = degrees_to_radians(v_fov);
+    auto height = tan(theta / 2);
+    auto viewport_height = 2.0 * height;
     auto viewport_width = aspect_ratio * viewport_height;
-    auto focal_length = 1.0;
 
-    origin_ = Point3(0, 0, 0);
-    horizontal_ = Vec3(viewport_width, 0, 0);
-    vertical_ = Vec3(0, viewport_height, 0);
+    w_ = unit_vector(look_from - look_at);
+    u_ = unit_vector(cross(v_up, w_));
+    v_ = cross(w_, u_);
+
+    origin_ = look_from;
+    horizontal_ = focus_dist * viewport_width * u_;
+    vertical_ = focus_dist * viewport_height * v_;
     lower_left_corner_ =
-        origin_ - horizontal_ / 2 - vertical_ / 2 - Vec3(0, 0, focal_length);
+        origin_ - horizontal_ / 2 - vertical_ / 2 - focus_dist * w_;
+
+    lens_radius_ = aperture / 2;
   }
 
-  Ray GetRay(double u, double v) const {
-    return Ray(origin_,
-               lower_left_corner_ + u * horizontal_ + v * vertical_ - origin_);
+  Ray GetRay(double s, double t) const {
+    Vec3 rd = lens_radius_ * random_in_unit_disk();
+    Vec3 offset = u_ * rd.X() + v_ * rd.Y();
+
+    return Ray(origin_ + offset, lower_left_corner_ + s * horizontal_ +
+                                     t * vertical_ - origin_ - offset);
   }
 
  private:
@@ -27,6 +37,8 @@ class Camera {
   Point3 lower_left_corner_;
   Vec3 horizontal_;
   Vec3 vertical_;
+  Vec3 u_, v_, w_;
+  double lens_radius_;
 };
 
 #pragma endregion
