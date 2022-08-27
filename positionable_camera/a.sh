@@ -1,6 +1,4 @@
-for i in {1..100}
+for i in {100..120}
     do
-        aperture=$((i * 0.1 + 0.1))
-        v_fov=$((90 - i * 0.8))
-        ./sphere > a$i.ppm
+       v_fov=$((20+i*0.5))  step=$((-i*1.8)) ./sphere > output2/b$i.ppm
     done
