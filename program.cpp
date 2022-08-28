@@ -1,12 +1,14 @@
+#include <fstream>
 #include <iomanip>
 #include <iostream>
-#include <fstream>
+
 
 #include "object/camera.h"
 #include "object/hittable_list.h"
+#include "object/moving_sphere.h"
 #include "object/sphere.h"
-#include "material/material.h"
 #include "utility/color.h"
+#include "material/material.h"
 #include "utility/rtweekend.h"
 
 #pragma clang diagnostic push
@@ -19,7 +21,7 @@ Color ray_color(const Ray& r, const Hittable& world, int depth) {
     return {0, 0, 0};
   }
 
-  if (world.hit(r, 0.001f, infinity, &hit_record)) {
+  if (world.Hit(r, 0.001f, infinity, &hit_record)) {
     Ray scattered;
     Color attenuation;
 
@@ -54,7 +56,9 @@ HittableList random_scene() {
           // diffuse
           auto albedo = Color::Random() * Color::Random();
           sphere_material = make_shared<Lambertian>(albedo);
-          world.Add(make_shared<Sphere>(center, 0.2, sphere_material));
+          auto center2 = center + Vec3(0, random_double(0, 0.5), 0);
+          world.Add(make_shared<MovingSphere>(center, center2, 0, 1.0, 0.2,
+                                              sphere_material));
         } else if (choose_mat < 0.95) {
           // metal
           auto albedo = Color::Random(0.5, 1);
@@ -84,8 +88,8 @@ HittableList random_scene() {
 
 int main() {
   // Image
-  const auto aspect_ratio = 3.0 / 2.0;
-  int image_width = 1200;
+  const auto aspect_ratio = 16.0 / 9.0;
+  int image_width = 1600;
   int image_height = static_cast<int>(image_width / aspect_ratio);
   int samples_per_pixel = 500;
   const int max_depth = 50;
@@ -111,7 +115,7 @@ int main() {
   auto v_fov = 20.0;
 
   Camera camera(look_from, look_at, v_up, v_fov, aspect_ratio, aperture,
-                dist_to_focus);
+                dist_to_focus, 0.0f, 1.0f);
 
   // Output
   std::ofstream ofs("image.ppm");
