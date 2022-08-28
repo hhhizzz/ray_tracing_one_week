@@ -1,5 +1,6 @@
 #include <iomanip>
 #include <iostream>
+#include <fstream>
 
 #include "object/camera.h"
 #include "object/hittable_list.h"
@@ -84,10 +85,19 @@ HittableList random_scene() {
 int main() {
   // Image
   const auto aspect_ratio = 3.0 / 2.0;
-  const int image_width = 1200;
-  const int image_height = static_cast<int>(image_width / aspect_ratio);
-  const int samples_per_pixel = 500;
+  int image_width = 1200;
+  int image_height = static_cast<int>(image_width / aspect_ratio);
+  int samples_per_pixel = 500;
   const int max_depth = 50;
+
+  // Read Environment Variables
+  if (const char* env_p = std::getenv("IMAGE_WIDTH")) {
+    image_width = std::stoi(env_p);
+    image_height = static_cast<int>(image_width / aspect_ratio);
+  }
+  if (const char* env_p = std::getenv("SPP")) {
+    samples_per_pixel = std::stoi(env_p);
+  }
 
   // World
   auto world = random_scene();
@@ -103,8 +113,11 @@ int main() {
   Camera camera(look_from, look_at, v_up, v_fov, aspect_ratio, aperture,
                 dist_to_focus);
 
+  // Output
+  std::ofstream ofs("image.ppm");
+
   // Render
-  std::cout << "P3\n" << image_width << ' ' << image_height << "\n255\n";
+  ofs << "P3\n" << image_width << ' ' << image_height << "\n255\n";
 
   for (int j = image_height - 1; j >= 0; --j) {
     std::cerr << "\rScanline's remaining:" << j << ' ' << std::flush;
@@ -117,7 +130,7 @@ int main() {
         Ray ray = camera.GetRay(u, v);
         pixel_color += ray_color(ray, world, max_depth);
       }
-      write_color(std::cout, pixel_color, samples_per_pixel);
+      write_color(ofs, pixel_color, samples_per_pixel);
     }
   }
   std::cerr << "\nDone.\n";
