@@ -31,7 +31,7 @@ class Dielectric : public Material {
       direction = refract(unit_direction, hitRecord.normal, refraction_ratio);
     }
 
-    *scattered = Ray(hitRecord.p, direction);
+    *scattered = Ray(hitRecord.p, direction, r_in.Time());
     return true;
   }
 

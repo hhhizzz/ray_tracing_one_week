@@ -14,7 +14,7 @@ class Sphere : public Hittable {
   }
   Sphere(const Point3& center, double radius, shared_ptr<Material> material)
       : center_(center), radius_(radius), material_(std::move(material)) {}
-  bool hit(const Ray& r, double t_min, double t_max,
+  bool Hit(const Ray& r, double t_min, double t_max,
            HitRecord* hit_record) const override;
 
   Point3 center_;
@@ -22,7 +22,7 @@ class Sphere : public Hittable {
   std::shared_ptr<Material> material_;
 };
 
-bool Sphere::hit(const Ray& r, double t_min, double t_max,
+bool Sphere::Hit(const Ray& r, double t_min, double t_max,
                  HitRecord* hit_record) const {
   auto oc = r.Origin() - center_;
   auto a = r.Direction().LengthSquared();
