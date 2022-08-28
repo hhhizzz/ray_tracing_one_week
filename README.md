@@ -5,7 +5,7 @@ most code comes from [Ray Tracing in One Weekend](https://raytracing.github.io/b
 
 Strictly follow the [Google C++ style guide](https://google.github.io/styleguide/cppguide.html)
 
-
+![](./doc/image.jpg)
 
 ## Build
 
@@ -14,4 +14,10 @@ mkdir build
 cd build
 cmake ..
 make
+```
+
+## Run
+
+```bash
+./program > image.ppm
 ```
