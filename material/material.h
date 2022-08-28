@@ -1,6 +1,5 @@
 #pragma once
 
-#include "material.h"
 #include "utility/rtweekend.h"
 
 struct HitRecord;
