@@ -7,15 +7,6 @@ include_directories(.)
 include_directories(utility)
 
 add_executable(
-        main
+        program
         program.cpp
-        utility/camera.h
-        utility/color.h
-        utility/hittable.h
-        utility/hittable_list.h
-        utility/material.h
-        utility/ray.h
-        utility/rtweekend.h
-        utility/sphere.h
-        utility/vec3.h
 )

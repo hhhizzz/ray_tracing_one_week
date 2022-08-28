@@ -3,7 +3,7 @@
 #include <memory>
 #include <utility>
 
-#include "utility/hittable.h"
+#include "hittable.h"
 #include "utility/vec3.h"
 
 class Sphere : public Hittable {

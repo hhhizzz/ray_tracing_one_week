@@ -1,12 +1,12 @@
 #include <iomanip>
 #include <iostream>
 
-#include "utility/camera.h"
+#include "object/camera.h"
+#include "object/hittable_list.h"
+#include "object/sphere.h"
+#include "material/material.h"
 #include "utility/color.h"
-#include "utility/hittable_list.h"
-#include "utility/material.h"
 #include "utility/rtweekend.h"
-#include "utility/sphere.h"
 
 #pragma clang diagnostic push
 #pragma ide diagnostic ignored "misc-no-recursion"
