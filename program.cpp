@@ -83,49 +83,21 @@ int main() {
   const auto aspect_ratio = 3.0 / 2.0;
   const int image_width = 600;
   const int image_height = static_cast<int>(image_width / aspect_ratio);
-  const int samples_per_pixel = 100;
+  const int samples_per_pixel = 50;
   const int max_depth = 50;
 
   // World
   auto world = random_scene();
 
-  // auto material_ground = make_shared<Lambertian>(Color(0.8, 0.8, 0.0));
-  // auto material_center = make_shared<Lambertian>(Color(0.1, 0.2, 0.5));
-  // auto material_left = make_shared<Dielectric>(1.5);
-  // auto material_right = make_shared<Metal>(Color(0.8, 0.6, 0.2), 0.0);
-
-  // world.Add(
-  //     make_shared<Sphere>(Point3(0.0, -100.5, -1.0), 100.0,
-  //     material_ground));
-  // world.Add(make_shared<Sphere>(Point3(0.0, 0.0, -1.0), 0.5,
-  // material_center)); world.Add(make_shared<Sphere>(Point3(-1.0, 0.0, -1.0),
-  // 0.5, material_left)); world.Add(make_shared<Sphere>(Point3(-1.0, 0.0,
-  // -1.0), -0.45, material_left)); world.Add(make_shared<Sphere>(Point3(1.0,
-  // 0.0, -1.0), 0.5, material_right));
-
   // Camera
-  Point3 look_from(26.0, 4.0, 6.0);
+  Point3 look_from(13.0, 2.0, 3.0);
   Point3 look_at(0, 0, 0);
   Vec3 v_up(0, 1, 0);
   auto dist_to_focus = 10.0;
   auto aperture = 0.1;
-  auto v_fov = 90.0;
+  auto v_fov = 20.0;
 
-  if (const char* env_p = std::getenv("aperture")) {
-    aperture = std::stof(env_p);
-  }
-
-  if (const char* env_p = std::getenv("v_fov")) {
-    v_fov = std::stof(env_p);
-  }
-
-  Vec3 move(0, 0, 0);
-  if (const char* env_p = std::getenv("step")) {
-    int step = std::stof(env_p);
-    move = Vec3(0.13 * step, 0.02 * step, 0.03 * step);
-  }
-
-  Camera camera(look_from + move, look_at, v_up, v_fov, aspect_ratio, aperture,
+  Camera camera(look_from, look_at, v_up, v_fov, aspect_ratio, aperture,
                 dist_to_focus);
 
   // Render
