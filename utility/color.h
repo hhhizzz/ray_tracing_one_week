@@ -2,8 +2,8 @@
 
 #include <iostream>
 
-#include "utility/vec3.h"
 #include "utility/rtweekend.h"
+#include "utility/vec3.h"
 
 void write_color(std::ostream& out, Color pixel_color, int samples_per_pixel) {
   auto r = pixel_color.X();

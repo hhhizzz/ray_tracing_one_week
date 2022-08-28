@@ -1,17 +1,21 @@
 #pragma once
 
 #include <memory>
+#include <utility>
 
 #include "utility/hittable.h"
 #include "utility/vec3.h"
 
 class Sphere : public Hittable {
  public:
-  Sphere() {}
+  Sphere() {
+    center_ = Point3(0, 0, 0);
+    radius_ = 1.0;
+  }
   Sphere(const Point3& center, double radius, shared_ptr<Material> material)
-      : center_(center), radius_(radius), material_(material) {}
+      : center_(center), radius_(radius), material_(std::move(material)) {}
   bool hit(const Ray& r, double t_min, double t_max,
-           HitRecord* rec) const override;
+           HitRecord* hit_record) const override;
 
   Point3 center_;
   double radius_;
@@ -26,11 +30,11 @@ bool Sphere::hit(const Ray& r, double t_min, double t_max,
   auto c = oc.LengthSquared() - radius_ * radius_;
   auto discriminant = b * b - 4 * a * c;
   if (discriminant >= 0) {
-    auto sqrtd = sqrt(discriminant);
+    auto sqrt_d = sqrt(discriminant);
 
-    auto root = (-b - sqrtd) / (2 * a);
+    auto root = (-b - sqrt_d) / (2 * a);
     if (root < t_min || root > t_max) {
-      root = (-b + sqrtd) / (2 * a);
+      root = (-b + sqrt_d) / (2 * a);
       if (root < t_min || root > t_max) {
         return false;
       }

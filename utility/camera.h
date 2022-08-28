@@ -24,12 +24,12 @@ class Camera {
     lens_radius_ = aperture / 2;
   }
 
-  Ray GetRay(double s, double t) const {
+  [[nodiscard]] Ray GetRay(double s, double t) const {
     Vec3 rd = lens_radius_ * random_in_unit_disk();
     Vec3 offset = u_ * rd.X() + v_ * rd.Y();
 
-    return Ray(origin_ + offset, lower_left_corner_ + s * horizontal_ +
-                                     t * vertical_ - origin_ - offset);
+    return {origin_ + offset, lower_left_corner_ + s * horizontal_ +
+                                  t * vertical_ - origin_ - offset};
   }
 
  private:

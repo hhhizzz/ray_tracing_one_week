@@ -8,12 +8,14 @@
 #include "utility/rtweekend.h"
 #include "utility/sphere.h"
 
+#pragma clang diagnostic push
+#pragma ide diagnostic ignored "misc-no-recursion"
 Color ray_color(const Ray& r, const Hittable& world, int depth) {
   HitRecord hit_record;
 
   // If we've exceeded the ray bounce limit, no more light is gathered.
   if (depth <= 0) {
-    return Color(0, 0, 0);
+    return {0, 0, 0};
   }
 
   if (world.hit(r, 0.001f, infinity, &hit_record)) {
@@ -23,7 +25,7 @@ Color ray_color(const Ray& r, const Hittable& world, int depth) {
     if (hit_record.material->scatter(r, hit_record, &attenuation, &scattered)) {
       return attenuation * ray_color(scattered, world, depth - 1);
     }
-    return Color(0, 0, 0);
+    return {0, 0, 0};
 
   } else {
     Vec3 unit_direction = unit_vector(r.Direction());
@@ -31,6 +33,7 @@ Color ray_color(const Ray& r, const Hittable& world, int depth) {
     return (1.0f - t) * Color(1.0f, 1.0f, 1.0f) + t * Color(0.5f, 0.7f, 1.0f);
   }
 }
+#pragma clang diagnostic pop
 
 HittableList random_scene() {
   HittableList world;
@@ -104,7 +107,7 @@ int main() {
   std::cout << "P3\n" << image_width << ' ' << image_height << "\n255\n";
 
   for (int j = image_height - 1; j >= 0; --j) {
-    std::cerr << "\rScanlines remaining:" << j << ' ' << std::flush;
+    std::cerr << "\rScanline's remaining:" << j << ' ' << std::flush;
     for (int i = 0; i < image_width; ++i) {
       Color pixel_color(0, 0, 0);
       for (int s = 0; s < samples_per_pixel; ++s) {

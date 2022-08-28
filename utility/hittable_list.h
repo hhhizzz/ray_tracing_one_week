@@ -10,9 +10,9 @@ using std::shared_ptr;
 
 class HittableList : public Hittable {
  public:
-  HittableList() {}
-  explicit HittableList(shared_ptr<Hittable> object) { Add(object); }
-  void Add(shared_ptr<Hittable> object) { objects_.push_back(object); }
+  HittableList() = default;
+  explicit HittableList(const shared_ptr<Hittable>& object) { Add(object); }
+  void Add(const shared_ptr<Hittable>& object) { objects_.push_back(object); }
   bool hit(const Ray& r, double t_min, double t_max,
            HitRecord* hit_record) const override;
   std::vector<shared_ptr<Hittable>> objects_;
@@ -32,6 +32,5 @@ bool HittableList::hit(const Ray& r, double t_min, double t_max,
   }
   return hit_anything;
 }
-
 
 #pragma endregion
