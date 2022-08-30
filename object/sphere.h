@@ -16,6 +16,7 @@ class Sphere : public Hittable {
       : center_(center), radius_(radius), material_(std::move(material)) {}
   bool Hit(const Ray& r, double t_min, double t_max,
            HitRecord* hit_record) const override;
+  bool BoundingBox(double time0, double time1, Aabb* output_box) const override;
 
   Point3 center_;
   double radius_;
@@ -48,6 +49,12 @@ bool Sphere::Hit(const Ray& r, double t_min, double t_max,
     return true;
   }
   return false;
+}
+
+bool Sphere::BoundingBox(double time0, double time1, Aabb* output_box) const {
+  *output_box = Aabb(center_ - Vec3(radius_, radius_, radius_),
+                     center_ + Vec3(radius_, radius_, radius_));
+  return true;
 }
 
 #pragma endregion

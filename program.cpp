@@ -2,14 +2,14 @@
 #include <iomanip>
 #include <iostream>
 
-
+#include "object/bvh.h"
 #include "object/camera.h"
 #include "object/hittable_list.h"
 #include "object/moving_sphere.h"
 #include "object/sphere.h"
 #include "utility/color.h"
-#include "material/material.h"
 #include "utility/rtweekend.h"
+#include "material/material.h"
 
 #pragma clang diagnostic push
 #pragma ide diagnostic ignored "misc-no-recursion"
@@ -83,6 +83,7 @@ HittableList random_scene() {
   auto material3 = make_shared<Metal>(Color(0.7, 0.6, 0.5), 0.0);
   world.Add(make_shared<Sphere>(Point3(4, 1, 0), 1.0, material3));
 
+  world.Add(make_shared<BvhNode>(world, 0, 1));
   return world;
 }
 
