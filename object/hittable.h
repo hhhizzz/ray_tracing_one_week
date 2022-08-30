@@ -2,6 +2,7 @@
 
 #include <memory>
 
+#include "utility/aabb.h"
 #include "utility/rtweekend.h"
 
 class Material;
@@ -23,6 +24,8 @@ class Hittable {
  public:
   virtual bool Hit(const Ray& r, double t_min, double t_max,
                    HitRecord* rec) const = 0;
+  virtual bool BoundingBox(double time0, double time1,
+                           Aabb* output_box) const = 0;
 };
 
 #pragma endregion
