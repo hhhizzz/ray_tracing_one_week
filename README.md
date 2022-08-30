@@ -20,5 +20,5 @@ make
 ## Run
 
 ```bash
-./program
+./first_week
 ```

@@ -7,6 +7,6 @@ include_directories(.)
 include_directories(utility)
 
 add_executable(
-        program
-        program.cpp
+        first_week
+        first.cpp
 )
