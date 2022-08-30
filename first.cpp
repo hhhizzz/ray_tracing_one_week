@@ -39,10 +39,11 @@ Color ray_color(const Ray& r, const Hittable& world, int depth) {
 #pragma clang diagnostic pop
 
 HittableList random_scene() {
+  HittableList boxes;
   HittableList world;
 
   auto ground_material = make_shared<Lambertian>(Color(0.5, 0.5, 0.5));
-  world.Add(make_shared<Sphere>(Point3(0, -1000, 0), 1000, ground_material));
+  boxes.Add(make_shared<Sphere>(Point3(0, -1000, 0), 1000, ground_material));
 
   for (int a = -11; a < 11; a++) {
     for (int b = -11; b < 11; b++) {
@@ -57,33 +58,33 @@ HittableList random_scene() {
           auto albedo = Color::Random() * Color::Random();
           sphere_material = make_shared<Lambertian>(albedo);
           auto center2 = center + Vec3(0, random_double(0, 0.5), 0);
-          world.Add(make_shared<MovingSphere>(center, center2, 0, 1.0, 0.2,
+          boxes.Add(make_shared<MovingSphere>(center, center2, 0, 1.0, 0.2,
                                               sphere_material));
         } else if (choose_mat < 0.95) {
           // metal
           auto albedo = Color::Random(0.5, 1);
           auto fuzz = random_double(0, 0.5);
           sphere_material = make_shared<Metal>(albedo, fuzz);
-          world.Add(make_shared<Sphere>(center, 0.2, sphere_material));
+          boxes.Add(make_shared<Sphere>(center, 0.2, sphere_material));
         } else {
           // glass
           sphere_material = make_shared<Dielectric>(1.5);
-          world.Add(make_shared<Sphere>(center, 0.2, sphere_material));
+          boxes.Add(make_shared<Sphere>(center, 0.2, sphere_material));
         }
       }
     }
   }
 
   auto material1 = make_shared<Dielectric>(1.5);
-  world.Add(make_shared<Sphere>(Point3(0, 1, 0), 1.0, material1));
+  boxes.Add(make_shared<Sphere>(Point3(0, 1, 0), 1.0, material1));
 
   auto material2 = make_shared<Lambertian>(Color(0.4, 0.2, 0.1));
-  world.Add(make_shared<Sphere>(Point3(-4, 1, 0), 1.0, material2));
+  boxes.Add(make_shared<Sphere>(Point3(-4, 1, 0), 1.0, material2));
 
   auto material3 = make_shared<Metal>(Color(0.7, 0.6, 0.5), 0.0);
-  world.Add(make_shared<Sphere>(Point3(4, 1, 0), 1.0, material3));
+  boxes.Add(make_shared<Sphere>(Point3(4, 1, 0), 1.0, material3));
 
-  world.Add(make_shared<BvhNode>(world, 0, 1));
+  world.Add(make_shared<BvhNode>(boxes, 0, 1));
   return world;
 }
 
