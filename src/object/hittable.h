@@ -33,9 +33,5 @@ class Hittable {
 #include "material/dielectric.h"
 #include "material/lambertian.h"
 #include "material/metal.h"
-#include "material/solid_color.h"
-#include "material/texture/checker_texture.h"
-#include "material/texture/image_texture.h"
-#include "material/texture/noise_texture.h"
 
 #pragma endregion
