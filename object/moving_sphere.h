@@ -6,8 +6,8 @@
 #include <utility>
 
 #include "hittable.h"
-#include "ray.h"
-#include "rtweekend.h"
+#include "utility/ray.h"
+#include "utility/rtweekend.h"
 
 class MovingSphere : public Hittable {
  public:
