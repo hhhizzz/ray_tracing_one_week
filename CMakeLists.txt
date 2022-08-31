@@ -7,6 +7,6 @@ include_directories(.)
 include_directories(utility)
 
 add_executable(
-        first_week
-        first.cpp
+        ray_tracing
+        main.cpp
 )

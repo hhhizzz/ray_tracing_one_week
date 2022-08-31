@@ -33,7 +33,7 @@ Color ray_color(const Ray& r, const Hittable& world, int depth) {
     return {0, 0, 0};
 
   } else {
-    Vec3 unit_direction = unit_vector(r.Direction());
+    Vec3 unit_direction = UnitVector(r.Direction());
     auto t = 0.5f * (unit_direction.Y() + 1.0f);
     return (1.0f - t) * Color(1.0f, 1.0f, 1.0f) + t * Color(0.5f, 0.7f, 1.0f);
   }
@@ -122,7 +122,7 @@ HittableList two_spheres() {
 HittableList two_perlin_spheres() {
   HittableList objects;
 
-  auto per_text = make_shared<NoiseTexture>();
+  auto per_text = make_shared<NoiseTexture>(4);
   objects.Add(make_shared<Sphere>(Point3(0, -1000, 0), 1000,
                                   make_shared<Lambertian>(per_text)));
   objects.Add(make_shared<Sphere>(Point3(0, 2, 0), 2,
@@ -174,6 +174,10 @@ int main(int argc, char** argv) {
   auto dist_to_focus = 10.0;
   auto aperture = 0.1;
   auto v_fov = 20.0;
+
+  if (const char* env_p = std::getenv("APERTURE")) {
+    aperture = std::stod(env_p);
+  }
 
   Camera camera(look_from, look_at, v_up, v_fov, aspect_ratio, aperture,
                 dist_to_focus, 0.0f, 1.0f);

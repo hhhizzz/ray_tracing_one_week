@@ -13,7 +13,7 @@ class Lambertian : public Material {
 
   bool scatter(const Ray& r_in, const HitRecord& hit_record, Color* attenuation,
                Ray* scattered) const override {
-    auto scatter_direction = hit_record.normal + random_unit_vector();
+    auto scatter_direction = hit_record.normal + RandomUnitVector();
 
     // Catch degenerate scatter direction
     if (scatter_direction.NearZero()) {
