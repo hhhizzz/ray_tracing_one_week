@@ -142,7 +142,7 @@ int main(int argc, char** argv) {
   int image_height = static_cast<int>(image_width / aspect_ratio);
   int samples_per_pixel = 500;
   const int max_depth = 50;
-  std::string scene_name = "random";
+  std::string scene_name = "Random";
 
   // Read Environment Variables
   if (const char* env_p = std::getenv("IMAGE_WIDTH")) {
