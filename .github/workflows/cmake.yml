@@ -23,6 +23,12 @@ jobs:
       with:
         submodules: true
 
+    - name: clang-format Check
+      uses: jidicula/clang-format-action@v4.8.0
+      with:
+        clang-format-version: '14'
+        check-path: 'src'
+
     - name: Generate build config
       run:
         cmake -S "${{ github.workspace }}" -B "${{ env.CMAKE_BUILD_DIR }}"
