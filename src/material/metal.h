@@ -9,7 +9,7 @@ class Metal : public Material {
  public:
   explicit Metal(const Color& a, double f) : albedo_(a), fuzz_(f) {}
 
-  bool scatter(const Ray& r_in, const HitRecord& rec, Color* attenuation,
+  bool Scatter(const Ray& r_in, const HitRecord& rec, Color* attenuation,
                Ray* scattered) const override {
     Vec3 reflected = Reflect(UnitVector(r_in.Direction()), rec.normal);
     *scattered =

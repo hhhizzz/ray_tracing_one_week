@@ -13,11 +13,11 @@ class Lambertian : public Material {
   explicit Lambertian(const Color& a) : albedo_(make_shared<SolidColor>(a)) {}
   explicit Lambertian(std::shared_ptr<Texture> a) : albedo_(std::move(a)) {}
 
-  bool scatter(const Ray& r_in, const HitRecord& hit_record, Color* attenuation,
+  bool Scatter(const Ray& r_in, const HitRecord& hit_record, Color* attenuation,
                Ray* scattered) const override {
     auto scatter_direction = hit_record.normal + RandomUnitVector();
 
-    // Catch degenerate scatter direction
+    // Catch degenerate Scatter direction
     if (scatter_direction.NearZero()) {
       scatter_direction = hit_record.normal;
     }

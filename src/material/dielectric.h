@@ -10,7 +10,7 @@ class Dielectric : public Material {
   explicit Dielectric(float index_of_refraction)
       : index_of_refraction_(index_of_refraction) {}
 
-  bool scatter(const Ray& r_in, const HitRecord& hitRecord, Color* attenuation,
+  bool Scatter(const Ray& r_in, const HitRecord& hitRecord, Color* attenuation,
                Ray* scattered) const override {
     *attenuation = Color(1.0, 1.0, 1.0);
     double refraction_ratio = hitRecord.front_face

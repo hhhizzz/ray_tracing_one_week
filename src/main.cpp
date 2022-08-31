@@ -3,6 +3,12 @@
 #include <iostream>
 #include <map>
 
+#include "material/diffuse_light.h"
+#include "material/solid_color.h"
+#include "material/texture/checker_texture.h"
+#include "material/texture/image_texture.h"
+#include "material/texture/noise_texture.h"
+#include "object/aa_rectangle.h"
 #include "object/bvh.h"
 #include "object/camera.h"
 #include "object/hittable_list.h"
@@ -11,32 +17,31 @@
 #include "utility/color.h"
 #include "utility/rtweekend.h"
 
-#pragma clang diagnostic push
-#pragma ide diagnostic ignored "misc-no-recursion"
-Color ray_color(const Ray& r, const Hittable& world, int depth) {
+Color RayColor(const Ray& r, const Color& background, const Hittable& world,
+               int depth) {
   HitRecord hit_record;
 
   // If we've exceeded the ray bounce limit, no more light is gathered.
   if (depth <= 0) {
     return {0, 0, 0};
   }
-
-  if (world.Hit(r, 0.001f, infinity, &hit_record)) {
-    Ray scattered;
-    Color attenuation;
-
-    if (hit_record.material->scatter(r, hit_record, &attenuation, &scattered)) {
-      return attenuation * ray_color(scattered, world, depth - 1);
-    }
-    return {0, 0, 0};
-
-  } else {
-    Vec3 unit_direction = UnitVector(r.Direction());
-    auto t = 0.5f * (unit_direction.Y() + 1.0f);
-    return (1.0f - t) * Color(1.0f, 1.0f, 1.0f) + t * Color(0.5f, 0.7f, 1.0f);
+  // If the ray hits nothing, return the background color.
+  if (!world.Hit(r, 0.001, infinity, &hit_record)) {
+    return background;
   }
+
+  Ray scattered;
+  Color attenuation;
+  Color emitted =
+      hit_record.material->Emitted(hit_record.u, hit_record.v, hit_record.p);
+
+  if (!hit_record.material->Scatter(r, hit_record, &attenuation, &scattered)) {
+    return emitted;
+  }
+
+  return emitted +
+         attenuation * RayColor(scattered, background, world, depth - 1);
 }
-#pragma clang diagnostic pop
 
 HittableList RandomScene(bool has_time = true,
                          bool has_checker_texture = true) {
@@ -135,6 +140,29 @@ HittableList Earth() {
   return HittableList(globe);
 }
 
+HittableList SampleLight(std::shared_ptr<Camera>& camera) {
+  HittableList objects;
+  auto per_text = make_shared<NoiseTexture>(4);
+  objects.Add(make_shared<Sphere>(Point3(0, -1000, 0), 1000,
+                                  make_shared<Lambertian>(per_text)));
+  objects.Add(make_shared<Sphere>(Point3(0, 2, 0), 2,
+                                  make_shared<Lambertian>(per_text)));
+
+  auto diff_light = make_shared<DiffuseLight>(make_shared<SolidColor>(4, 4, 4));
+  objects.Add(make_shared<Sphere>(Point3(0, 7, 0), 2, diff_light));
+  objects.Add(make_shared<XyRectangle>(3, 5, 1, 3, -2, diff_light));
+
+  Point3 look_from(26.0, 3.0, 6.0);
+  Point3 look_at(0, 2, 0);
+  auto aperture = 0.01;
+
+  camera =
+      make_shared<Camera>(look_from, look_at, camera->v_up_, camera->v_fov_,
+                          camera->aspect_ratio_, aperture, camera->focus_dist_);
+
+  return objects;
+}
+
 int main(int argc, char** argv) {
   // Image
   const auto aspect_ratio = 16.0 / 9.0;
@@ -156,23 +184,6 @@ int main(int argc, char** argv) {
     scene_name = env_p;
   }
 
-  // World
-  auto world_map = std::map<std::string, HittableList>{
-      {"Random", RandomScene(false, false)},
-      {"WithTime", RandomScene(true, false)},
-      {"CheckerTexture", RandomScene(true, true)},
-      {"TwoSpheres", TwoSpheres()},
-      {"TwoPerlinSpheres", TwoPerlinSpheres()},
-      {"Earth", Earth()},
-  };
-
-  if (world_map.find(scene_name) == world_map.end()) {
-    std::cerr << "Scene " << scene_name << " not found" << std::endl;
-    return 1;
-  }
-  std::cerr << "Rendering Scene:  " << scene_name << std::endl;
-  auto world = world_map[scene_name];
-
   // Camera
   Point3 look_from(13.0, 2.0, 3.0);
   Point3 look_at(0, 0, 0);
@@ -181,12 +192,27 @@ int main(int argc, char** argv) {
   auto aperture = 0.1;
   auto v_fov = 20.0;
 
-  if (const char* env_p = std::getenv("APERTURE")) {
-    aperture = std::stod(env_p);
-  }
+  auto camera = std::make_shared<Camera>(look_from, look_at, v_up, v_fov,
+                                         aspect_ratio, aperture, dist_to_focus,
+                                         Color(0.70, 0.80, 1.00), 0.0f, 1.0f);
 
-  Camera camera(look_from, look_at, v_up, v_fov, aspect_ratio, aperture,
-                dist_to_focus, 0.0f, 1.0f);
+  // World
+  auto world_map = std::map<std::string, HittableList>{
+      {"Random", RandomScene(false, false)},
+      {"WithTime", RandomScene(true, false)},
+      {"CheckerTexture", RandomScene(true, true)},
+      {"TwoSpheres", TwoSpheres()},
+      {"TwoPerlinSpheres", TwoPerlinSpheres()},
+      {"Earth", Earth()},
+      {"SampleLight", SampleLight(camera)},
+  };
+
+  if (world_map.find(scene_name) == world_map.end()) {
+    std::cerr << "Scene " << scene_name << " not found" << std::endl;
+    return 1;
+  }
+  std::cerr << "Rendering Scene:  " << scene_name << std::endl;
+  auto world = world_map[scene_name];
 
   // Output
   std::ofstream ofs(scene_name + ".ppm");
@@ -202,8 +228,9 @@ int main(int argc, char** argv) {
         auto u = (i + RandomDouble()) / (image_width - 1);
         auto v = (j + RandomDouble()) / (image_height - 1);
 
-        Ray ray = camera.GetRay(u, v);
-        pixel_color += ray_color(ray, world, max_depth);
+        Ray ray = camera->GetRay(u, v);
+        auto background = camera->background_;
+        pixel_color += RayColor(ray, background, world, max_depth);
       }
       write_color(ofs, pixel_color, samples_per_pixel);
     }
