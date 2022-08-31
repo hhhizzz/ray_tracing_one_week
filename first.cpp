@@ -2,6 +2,8 @@
 #include <iomanip>
 #include <iostream>
 
+
+#include "material/checker_texture.h"
 #include "object/bvh.h"
 #include "object/camera.h"
 #include "object/hittable_list.h"
@@ -42,8 +44,15 @@ HittableList random_scene() {
   HittableList boxes;
   HittableList world;
 
-  auto ground_material = make_shared<Lambertian>(Color(0.5, 0.5, 0.5));
-  boxes.Add(make_shared<Sphere>(Point3(0, -1000, 0), 1000, ground_material));
+  //  auto ground_material = make_shared<Lambertian>(Color(0.5, 0.5, 0.5));
+  //  boxes.Add(make_shared<Sphere>(Point3(0, -1000, 0), 1000,
+  //  ground_material));
+
+  auto checker =
+      make_shared<CheckTexture>(make_shared<SolidColor>(0.2f, 0.3f, 0.1f),
+                                make_shared<SolidColor>(0.9f, 0.9f, 0.9f));
+  boxes.Add(make_shared<Sphere>(Point3(0, -1000, 0), 1000,
+                                make_shared<Lambertian>(checker)));
 
   for (int a = -11; a < 11; a++) {
     for (int b = -11; b < 11; b++) {
