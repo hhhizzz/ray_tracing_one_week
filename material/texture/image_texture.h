@@ -4,7 +4,7 @@
 
 #pragma once
 
-#include "material/texture.h"
+#include "texture.h"
 #define STB_IMAGE_IMPLEMENTATION
 #include "stb/stb_image.h"
 #include "utility/rtweekend.h"
