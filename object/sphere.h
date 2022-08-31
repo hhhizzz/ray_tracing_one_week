@@ -21,6 +21,14 @@ class Sphere : public Hittable {
   Point3 center_;
   double radius_;
   std::shared_ptr<Material> material_;
+
+ private:
+  static void GetSphereUV(const Point3& p, double* u, double* v) {
+    auto phi = atan2(p.X(), p.X());
+    auto theta = asin(p.Y());
+    *u = 1 - (phi + pi) / (2 * pi);
+    *v = (theta + pi / 2) / pi;
+  }
 };
 
 bool Sphere::Hit(const Ray& r, double t_min, double t_max,
@@ -44,6 +52,7 @@ bool Sphere::Hit(const Ray& r, double t_min, double t_max,
     hit_record->p = r.At(root);
     auto outward_normal = (hit_record->p - center_) / radius_;
     hit_record->SetFaceNormal(r, outward_normal);
+    GetSphereUV(outward_normal, &hit_record->u, &hit_record->v);
     hit_record->material = material_;
 
     return true;
