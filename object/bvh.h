@@ -69,7 +69,7 @@ bool BvhNode::BoundingBox(double time0, double time1, Aabb* output_box) const {
 
 BvhNode::BvhNode(std::vector<std::shared_ptr<Hittable>>& src_objects,
                  long start, long end, double time0, double time1) {
-  int axis = random_int(0, 2);
+  int axis = RandomInt(0, 2);
   auto comparator = (axis == 0)   ? BoxXCompare
                     : (axis == 1) ? BoxYCompare
                                   : BoxZCompare;
