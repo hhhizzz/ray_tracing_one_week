@@ -7,7 +7,7 @@ class Camera {
   Camera(Point3 look_from, Point3 look_at, Vec3 v_up, double v_fov,
          double aspect_ratio, double aperture, double focus_dist,
          double time0 = 0, double time1 = 0) {
-    auto theta = degrees_to_radians(v_fov);
+    auto theta = DegreesToRadians(v_fov);
     auto height = tan(theta / 2);
     auto viewport_height = 2.0 * height;
     auto viewport_width = aspect_ratio * viewport_height;
@@ -34,7 +34,7 @@ class Camera {
     return {
         origin_ + offset,
         lower_left_corner_ + s * horizontal_ + t * vertical_ - origin_ - offset,
-        random_double(time0_, time1_)};
+        RandomDouble(time0_, time1_)};
   }
 
  private:

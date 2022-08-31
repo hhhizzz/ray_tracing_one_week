@@ -25,7 +25,7 @@ class Dielectric : public Material {
     Vec3 direction;
 
     if (cannot_refract ||
-        reflectance(cos_theta, refraction_ratio) > random_double()) {
+        reflectance(cos_theta, refraction_ratio) > RandomDouble()) {
       direction = Reflect(unit_direction, hitRecord.normal);
     } else {
       direction = Refract(unit_direction, hitRecord.normal, refraction_ratio);
