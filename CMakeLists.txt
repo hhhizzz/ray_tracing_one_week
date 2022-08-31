@@ -7,6 +7,8 @@ include_directories(.)
 
 include_directories(third-party)
 
+FILE(COPY resources/earth-map.jpg DESTINATION "${CMAKE_BINARY_DIR}/resources")
+
 add_executable(
         ray_tracing
         main.cpp

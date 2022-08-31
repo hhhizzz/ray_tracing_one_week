@@ -29,6 +29,13 @@ class Hittable {
   virtual bool BoundingBox(double time0, double time1,
                            Aabb* output_box) const = 0;
 };
-#include "material/material.h"
+
+#include "material/checker_texture.h"
+#include "material/dielectric.h"
+#include "material/image_texture.h"
+#include "material/lambertian.h"
+#include "material/metal.h"
+#include "material/noise_texture.h"
+#include "material/solid_color.h"
 
 #pragma endregion

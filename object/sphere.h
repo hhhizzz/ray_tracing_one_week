@@ -24,10 +24,11 @@ class Sphere : public Hittable {
 
  private:
   static void GetSphereUV(const Point3& p, double* u, double* v) {
-    auto phi = atan2(p.X(), p.X());
-    auto theta = asin(p.Y());
-    *u = 1 - (phi + pi) / (2 * pi);
-    *v = (theta + pi / 2) / pi;
+    auto theta = acos(-p.Y());
+    auto phi = atan2(-p.Z(), p.X()) + pi;
+
+    *u = phi / (2 * pi);
+    *v = theta / pi;
   }
 };
 

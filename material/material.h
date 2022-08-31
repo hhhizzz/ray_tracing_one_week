@@ -10,8 +10,4 @@ class Material {
                        Color* attenuation, Ray* scattered) const = 0;
 };
 
-#include "dielectric.h"
-#include "lambertian.h"
-#include "metal.h"
-
 #pragma endregion
