@@ -3,8 +3,6 @@
 #include <iostream>
 #include <map>
 
-#include "material/checker_texture.h"
-#include "material/noise_texture.h"
 #include "object/bvh.h"
 #include "object/camera.h"
 #include "object/hittable_list.h"
@@ -12,7 +10,6 @@
 #include "object/sphere.h"
 #include "utility/color.h"
 #include "utility/rtweekend.h"
-#include "stb/stb_image.h"
 
 #pragma clang diagnostic push
 #pragma ide diagnostic ignored "misc-no-recursion"
@@ -41,8 +38,8 @@ Color ray_color(const Ray& r, const Hittable& world, int depth) {
 }
 #pragma clang diagnostic pop
 
-HittableList random_scene(bool has_time = true,
-                          bool has_checker_texture = true) {
+HittableList RandomScene(bool has_time = true,
+                         bool has_checker_texture = true) {
   HittableList boxes;
   HittableList world;
 
@@ -107,7 +104,7 @@ HittableList random_scene(bool has_time = true,
   return world;
 }
 
-HittableList two_spheres() {
+HittableList TwoSpheres() {
   HittableList objects;
 
   auto checker =
@@ -120,7 +117,7 @@ HittableList two_spheres() {
   return objects;
 }
 
-HittableList two_perlin_spheres() {
+HittableList TwoPerlinSpheres() {
   HittableList objects;
 
   auto per_text = make_shared<NoiseTexture>(4);
@@ -129,6 +126,13 @@ HittableList two_perlin_spheres() {
   objects.Add(make_shared<Sphere>(Point3(0, 2, 0), 2,
                                   make_shared<Lambertian>(per_text)));
   return objects;
+}
+
+HittableList Earth() {
+  auto earth_texture = make_shared<ImageTexture>("resources/earth-map.jpg");
+  auto earth_surface = make_shared<Lambertian>(earth_texture);
+  auto globe = make_shared<Sphere>(Point3(0, 0, 0), 2, earth_surface);
+  return HittableList(globe);
 }
 
 int main(int argc, char** argv) {
@@ -154,11 +158,12 @@ int main(int argc, char** argv) {
 
   // World
   auto world_map = std::map<std::string, HittableList>{
-      {"random", random_scene(false, false)},
-      {"time", random_scene(true, false)},
-      {"checker_texture", random_scene(true, true)},
-      {"two_spheres", two_spheres()},
-      {"two_perlin_spheres", two_perlin_spheres()},
+      {"Random", RandomScene(false, false)},
+      {"WithTime", RandomScene(true, false)},
+      {"CheckerTexture", RandomScene(true, true)},
+      {"TwoSpheres", TwoSpheres()},
+      {"TwoPerlinSpheres", TwoPerlinSpheres()},
+      {"Earth", Earth()},
   };
 
   if (world_map.find(scene_name) == world_map.end()) {

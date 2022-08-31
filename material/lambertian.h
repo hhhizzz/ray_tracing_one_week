@@ -3,13 +3,15 @@
 //
 
 #pragma once
+#include <utility>
+
 #include "material.h"
 #include "solid_color.h"
 
 class Lambertian : public Material {
  public:
   explicit Lambertian(const Color& a) : albedo_(make_shared<SolidColor>(a)) {}
-  explicit Lambertian(std::shared_ptr<Texture> a) : albedo_(a) {}
+  explicit Lambertian(std::shared_ptr<Texture> a) : albedo_(std::move(a)) {}
 
   bool scatter(const Ray& r_in, const HitRecord& hit_record, Color* attenuation,
                Ray* scattered) const override {

@@ -37,7 +37,7 @@ inline int random_int(int min, int max) {
 
 double degrees_to_radians(double degrees) { return degrees * pi / 180; }
 
-double clamp(double x, double min, double max) {
+double Clamp(double x, double min, double max) {
   return x < min ? min : (x > max ? max : x);
 }
 
