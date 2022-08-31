@@ -35,7 +35,7 @@ bool Sphere::Hit(const Ray& r, double t_min, double t_max,
                  HitRecord* hit_record) const {
   auto oc = r.Origin() - center_;
   auto a = r.Direction().LengthSquared();
-  auto b = 2.0f * dot(oc, r.Direction());
+  auto b = 2.0f * Dot(oc, r.Direction());
   auto c = oc.LengthSquared() - radius_ * radius_;
   auto discriminant = b * b - 4 * a * c;
   if (discriminant >= 0) {

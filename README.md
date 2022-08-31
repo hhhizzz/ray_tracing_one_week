@@ -20,5 +20,5 @@ make
 ## Run
 
 ```bash
-./first_week
+./ray_tracing
 ```

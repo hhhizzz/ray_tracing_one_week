@@ -12,8 +12,8 @@ class Camera {
     auto viewport_height = 2.0 * height;
     auto viewport_width = aspect_ratio * viewport_height;
 
-    w_ = unit_vector(look_from - look_at);
-    u_ = unit_vector(cross(v_up, w_));
+    w_ = UnitVector(look_from - look_at);
+    u_ = UnitVector(cross(v_up, w_));
     v_ = cross(w_, u_);
 
     origin_ = look_from;
@@ -28,7 +28,7 @@ class Camera {
   }
 
   [[nodiscard]] Ray GetRay(double s, double t) const {
-    Vec3 rd = lens_radius_ * random_in_unit_disk();
+    Vec3 rd = lens_radius_ * RandomInUnitDisk();
     Vec3 offset = u_ * rd.X() + v_ * rd.Y();
 
     return {

@@ -60,7 +60,7 @@ using Point3 = Vec3;
 using Color = Vec3;
 
 // Vec3 Utility Functions
-Vec3 random_in_unit_sphere() {
+Vec3 RandomInUnitSphere() {
   while (true) {
     auto p = Vec3::Random(-1, 1);
     if (p.LengthSquared() >= 1) continue;
@@ -68,7 +68,7 @@ Vec3 random_in_unit_sphere() {
   }
 }
 
-Vec3 random_in_unit_disk() {
+Vec3 RandomInUnitDisk() {
   while (true) {
     auto p = Vec3(random_double(-1, 1), random_double(-1, 1), 0);
     if (p.LengthSquared() >= 1) continue;
@@ -100,7 +100,7 @@ inline Vec3 operator*(const Vec3& v, double t) { return t * v; }
 
 inline Vec3 operator/(Vec3 v, double t) { return 1 / t * v; }
 
-inline double dot(const Vec3& u, const Vec3& v) {
+inline double Dot(const Vec3& u, const Vec3& v) {
   return u.e_[0] * v.e_[0] + u.e_[1] * v.e_[1] + u.e_[2] * v.e_[2];
 }
 
@@ -110,14 +110,14 @@ inline Vec3 cross(const Vec3& u, const Vec3& v) {
           u.e_[0] * v.e_[1] - u.e_[1] * v.e_[0]};
 }
 
-inline Vec3 unit_vector(Vec3 v) { return v / v.Length(); }
+inline Vec3 UnitVector(Vec3 v) { return v / v.Length(); }
 
-Vec3 random_unit_vector() { return unit_vector(random_in_unit_sphere()); }
+Vec3 RandomUnitVector() { return UnitVector(RandomInUnitSphere()); }
 
-Vec3 reflect(const Vec3& v, const Vec3& n) { return v - 2 * dot(v, n) * n; }
+Vec3 Reflect(const Vec3& v, const Vec3& n) { return v - 2 * Dot(v, n) * n; }
 
-Vec3 refract(const Vec3& uv, const Vec3& n, double etai_over_etat) {
-  auto cos_theta = fmin(dot(-uv, n), 1.0f);
+Vec3 Refract(const Vec3& uv, const Vec3& n, double etai_over_etat) {
+  auto cos_theta = fmin(Dot(-uv, n), 1.0f);
   Vec3 r_out_parallel = etai_over_etat * (uv + cos_theta * n);
   Vec3 r_out_perp = -sqrt(fabs(1.0f - r_out_parallel.LengthSquared())) * n;
   return r_out_parallel + r_out_perp;

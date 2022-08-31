@@ -17,8 +17,8 @@ class Dielectric : public Material {
                                   ? (1.0 / index_of_refraction_)
                                   : index_of_refraction_;
 
-    Vec3 unit_direction = unit_vector(r_in.Direction());
-    double cos_theta = fmin(dot(-unit_direction, hitRecord.normal), 1.0);
+    Vec3 unit_direction = UnitVector(r_in.Direction());
+    double cos_theta = fmin(Dot(-unit_direction, hitRecord.normal), 1.0);
     double sin_theta = sqrt(1.0 - cos_theta * cos_theta);
 
     bool cannot_refract = (refraction_ratio * sin_theta) > 1.0;
@@ -26,9 +26,9 @@ class Dielectric : public Material {
 
     if (cannot_refract ||
         reflectance(cos_theta, refraction_ratio) > random_double()) {
-      direction = reflect(unit_direction, hitRecord.normal);
+      direction = Reflect(unit_direction, hitRecord.normal);
     } else {
-      direction = refract(unit_direction, hitRecord.normal, refraction_ratio);
+      direction = Refract(unit_direction, hitRecord.normal, refraction_ratio);
     }
 
     *scattered = Ray(hitRecord.p, direction, r_in.Time());
