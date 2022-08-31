@@ -29,5 +29,6 @@ class Hittable {
   virtual bool BoundingBox(double time0, double time1,
                            Aabb* output_box) const = 0;
 };
+#include "material/material.h"
 
 #pragma endregion
