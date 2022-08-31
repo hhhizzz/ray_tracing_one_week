@@ -183,7 +183,7 @@ int main(int argc, char** argv) {
                 dist_to_focus, 0.0f, 1.0f);
 
   // Output
-  std::ofstream ofs("image.ppm");
+  std::ofstream ofs(scene_name + ".ppm");
 
   // Render
   ofs << "P3\n" << image_width << ' ' << image_height << "\n255\n";
