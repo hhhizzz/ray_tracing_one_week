@@ -11,12 +11,12 @@ class Vec3 {
   Vec3(double e0, double e1, double e2) : e_{e0, e1, e2} {}
 
   static Vec3 Random() {
-    return {random_double(), random_double(), random_double()};
+    return {RandomDouble(), RandomDouble(), RandomDouble()};
   }
 
   static Vec3 Random(double min, double max) {
-    return {random_double(min, max), random_double(min, max),
-            random_double(min, max)};
+    return {RandomDouble(min, max), RandomDouble(min, max),
+            RandomDouble(min, max)};
   }
 
   [[nodiscard]] double X() const { return e_[0]; }
@@ -70,7 +70,7 @@ Vec3 RandomInUnitSphere() {
 
 Vec3 RandomInUnitDisk() {
   while (true) {
-    auto p = Vec3(random_double(-1, 1), random_double(-1, 1), 0);
+    auto p = Vec3(RandomDouble(-1, 1), RandomDouble(-1, 1), 0);
     if (p.LengthSquared() >= 1) continue;
     return p;
   }

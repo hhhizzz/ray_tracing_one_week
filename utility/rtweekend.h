@@ -19,23 +19,23 @@ const double pi = 3.14159265358979323846;
 
 // Utility functions
 
-// double random_double() { return rand() / (RAND_MAX + 1.0); }
+// double RandomDouble() { return rand() / (RAND_MAX + 1.0); }
 
-double random_double() {
+double RandomDouble() {
   static std::uniform_real_distribution<double> distribution(0.0, 1.0);
   static std::mt19937 generator(std::random_device{}());
   return distribution(generator);
 }
 
-double random_double(double min, double max) {
-  return min + (max - min) * random_double();
+double RandomDouble(double min, double max) {
+  return min + (max - min) * RandomDouble();
 }
 
-inline int random_int(int min, int max) {
-  return static_cast<int>(random_double(min, max + 1));
+inline int RandomInt(int min, int max) {
+  return static_cast<int>(RandomDouble(min, max + 1));
 }
 
-double degrees_to_radians(double degrees) { return degrees * pi / 180; }
+double DegreesToRadians(double degrees) { return degrees * pi / 180; }
 
 double Clamp(double x, double min, double max) {
   return x < min ? min : (x > max ? max : x);

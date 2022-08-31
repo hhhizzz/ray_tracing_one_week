@@ -63,8 +63,8 @@ HittableList RandomScene(bool has_time = true,
 
   for (int a = -11; a < 11; a++) {
     for (int b = -11; b < 11; b++) {
-      auto choose_mat = random_double();
-      Point3 center(a + 0.9 * random_double(), 0.2, b + 0.9 * random_double());
+      auto choose_mat = RandomDouble();
+      Point3 center(a + 0.9 * RandomDouble(), 0.2, b + 0.9 * RandomDouble());
 
       if ((center - Point3(4, 0.2, 0)).Length() > 0.9) {
         shared_ptr<Material> sphere_material;
@@ -73,13 +73,13 @@ HittableList RandomScene(bool has_time = true,
           // diffuse
           auto albedo = Color::Random() * Color::Random();
           sphere_material = make_shared<Lambertian>(albedo);
-          auto center2 = center + Vec3(0, random_double(0, 0.5), 0);
+          auto center2 = center + Vec3(0, RandomDouble(0, 0.5), 0);
           boxes.Add(make_shared<MovingSphere>(center, center2, time0, time1,
                                               0.2, sphere_material));
         } else if (choose_mat < 0.95) {
           // metal
           auto albedo = Color::Random(0.5, 1);
-          auto fuzz = random_double(0, 0.5);
+          auto fuzz = RandomDouble(0, 0.5);
           sphere_material = make_shared<Metal>(albedo, fuzz);
           boxes.Add(make_shared<Sphere>(center, 0.2, sphere_material));
         } else {
@@ -199,8 +199,8 @@ int main(int argc, char** argv) {
     for (int i = 0; i < image_width; ++i) {
       Color pixel_color(0, 0, 0);
       for (int s = 0; s < samples_per_pixel; ++s) {
-        auto u = (i + random_double()) / (image_width - 1);
-        auto v = (j + random_double()) / (image_height - 1);
+        auto u = (i + RandomDouble()) / (image_width - 1);
+        auto v = (j + RandomDouble()) / (image_height - 1);
 
         Ray ray = camera.GetRay(u, v);
         pixel_color += ray_color(ray, world, max_depth);
