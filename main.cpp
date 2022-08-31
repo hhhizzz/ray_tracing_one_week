@@ -12,6 +12,7 @@
 #include "object/sphere.h"
 #include "utility/color.h"
 #include "utility/rtweekend.h"
+#include "stb/stb_image.h"
 
 #pragma clang diagnostic push
 #pragma ide diagnostic ignored "misc-no-recursion"

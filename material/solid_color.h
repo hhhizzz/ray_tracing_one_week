@@ -3,7 +3,8 @@
 //
 
 #pragma once
-#include "texture.h"
+
+#include "material/texture.h"
 
 class SolidColor : public Texture {
  public:
