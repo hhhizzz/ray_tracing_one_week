@@ -8,7 +8,10 @@
 #include "material/texture/checker_texture.h"
 #include "material/texture/image_texture.h"
 #include "material/texture/noise_texture.h"
+#include "object/Rotate.h"
+#include "object/Translate.h"
 #include "object/aa_rectangle.h"
+#include "object/box.h"
 #include "object/bvh.h"
 #include "object/camera.h"
 #include "object/hittable_list.h"
@@ -17,6 +20,8 @@
 #include "utility/color.h"
 #include "utility/rtweekend.h"
 
+#pragma clang diagnostic push
+#pragma ide diagnostic ignored "misc-no-recursion"
 Color RayColor(const Ray& r, const Color& background, const Hittable& world,
                int depth) {
   HitRecord hit_record;
@@ -42,6 +47,7 @@ Color RayColor(const Ray& r, const Color& background, const Hittable& world,
   return emitted +
          attenuation * RayColor(scattered, background, world, depth - 1);
 }
+#pragma clang diagnostic pop
 
 HittableList RandomScene(bool has_time = true,
                          bool has_checker_texture = true) {
@@ -163,28 +169,45 @@ HittableList SampleLight(std::shared_ptr<Camera>& camera) {
   return objects;
 }
 
+HittableList CornellBox(std::shared_ptr<Camera>& camera) {
+  HittableList objects;
+
+  auto red = std::make_shared<Lambertian>(Color(0.65, 0.05, 0.05));
+  auto white = std::make_shared<Lambertian>(Color(0.73, 0.73, 0.73));
+  auto green = std::make_shared<Lambertian>(Color(.12, .45, .15));
+  auto light = std::make_shared<DiffuseLight>(Color(15, 15, 15));
+
+  objects.Add(std::make_shared<YzRectangle>(0, 555, 0, 555, 555, green));
+  objects.Add(std::make_shared<YzRectangle>(0, 555, 0, 555, 0, red));
+  objects.Add(std::make_shared<XzRectangle>(213, 343, 227, 332, 554, light));
+  objects.Add(std::make_shared<XzRectangle>(0, 555, 0, 555, 0, white));
+  objects.Add(std::make_shared<XzRectangle>(0, 555, 0, 555, 555, white));
+  objects.Add(std::make_shared<XyRectangle>(0, 555, 0, 555, 555, white));
+
+  std::shared_ptr<Hittable> box1 =
+      std::make_shared<Box>(Point3(0, 0, 0), Point3(165, 330, 165), white);
+  box1 = make_shared<RotateY>(box1, 15);
+  box1 = make_shared<Translate>(box1, Vec3(265, 0, 295));
+  objects.Add(box1);
+
+  std::shared_ptr<Hittable> box2 =
+      std::make_shared<Box>(Point3(0, 0, 0), Point3(165, 165, 165), white);
+  box2 = make_shared<RotateY>(box2, -18);
+  box2 = make_shared<Translate>(box2, Vec3(130, 0, 65));
+  objects.Add(box2);
+
+  auto new_camera = std::make_shared<Camera>(
+      Point3(278, 278, -800), Point3(278, 278, 0), camera->v_up_, 40, 1.0,
+      camera->aperture_, camera->focus_dist_, Color(0, 0, 0), 0, 0);
+
+  camera = new_camera;
+
+  return objects;
+}
+
 int main(int argc, char** argv) {
-  // Image
-  const auto aspect_ratio = 16.0 / 9.0;
-  int image_width = 1600;
-  int image_height = static_cast<int>(image_width / aspect_ratio);
-  int samples_per_pixel = 500;
-  const int max_depth = 50;
-  std::string scene_name = "Random";
-
-  // Read Environment Variables
-  if (const char* env_p = std::getenv("IMAGE_WIDTH")) {
-    image_width = std::stoi(env_p);
-    image_height = static_cast<int>(image_width / aspect_ratio);
-  }
-  if (const char* env_p = std::getenv("SPP")) {
-    samples_per_pixel = std::stoi(env_p);
-  }
-  if (const char* env_p = std::getenv("SCENE")) {
-    scene_name = env_p;
-  }
-
   // Camera
+  auto aspect_ratio = 16.0 / 9.0;
   Point3 look_from(13.0, 2.0, 3.0);
   Point3 look_at(0, 0, 0);
   Vec3 v_up(0, 1, 0);
@@ -205,7 +228,28 @@ int main(int argc, char** argv) {
       {"TwoPerlinSpheres", TwoPerlinSpheres()},
       {"Earth", Earth()},
       {"SampleLight", SampleLight(camera)},
+      {"CornellBox", CornellBox(camera)},
   };
+
+  // Image
+  aspect_ratio = camera->aspect_ratio_;
+  int image_width = 1600;
+  int image_height = static_cast<int>(image_width / aspect_ratio);
+  int samples_per_pixel = 500;
+  const int max_depth = 50;
+  std::string scene_name = "Random";
+
+  // Read Environment Variables
+  if (const char* env_p = std::getenv("IMAGE_WIDTH")) {
+    image_width = std::stoi(env_p);
+    image_height = static_cast<int>(image_width / aspect_ratio);
+  }
+  if (const char* env_p = std::getenv("SPP")) {
+    samples_per_pixel = std::stoi(env_p);
+  }
+  if (const char* env_p = std::getenv("SCENE")) {
+    scene_name = env_p;
+  }
 
   if (world_map.find(scene_name) == world_map.end()) {
     std::cerr << "Scene " << scene_name << " not found" << std::endl;
