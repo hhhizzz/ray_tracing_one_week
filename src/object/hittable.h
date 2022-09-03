@@ -31,6 +31,7 @@ class Hittable {
 };
 
 #include "material/dielectric.h"
+#include "material/isotropic.h"
 #include "material/lambertian.h"
 #include "material/metal.h"
 

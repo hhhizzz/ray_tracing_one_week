@@ -12,6 +12,7 @@
 #include "object/box.h"
 #include "object/bvh.h"
 #include "object/camera.h"
+#include "object/constant_medium.h"
 #include "object/hittable_list.h"
 #include "object/moving_sphere.h"
 #include "object/rotate.h"
@@ -205,6 +206,43 @@ HittableList CornellBox(std::shared_ptr<Camera>& camera) {
   return objects;
 }
 
+HittableList CornellSmoke(std::shared_ptr<Camera>& camera) {
+  HittableList objects;
+
+  auto red = std::make_shared<Lambertian>(Color(0.65, 0.05, 0.05));
+  auto white = std::make_shared<Lambertian>(Color(0.73, 0.73, 0.73));
+  auto green = std::make_shared<Lambertian>(Color(.12, .45, .15));
+  auto light = std::make_shared<DiffuseLight>(Color(7, 7, 7));
+
+  objects.Add(std::make_shared<YzRectangle>(0, 555, 0, 555, 555, green));
+  objects.Add(std::make_shared<YzRectangle>(0, 555, 0, 555, 0, red));
+  objects.Add(std::make_shared<XzRectangle>(113, 443, 127, 432, 554, light));
+  objects.Add(std::make_shared<XzRectangle>(0, 555, 0, 555, 0, white));
+  objects.Add(std::make_shared<XzRectangle>(0, 555, 0, 555, 555, white));
+  objects.Add(std::make_shared<XyRectangle>(0, 555, 0, 555, 555, white));
+
+  std::shared_ptr<Hittable> box1 =
+      std::make_shared<Box>(Point3(0, 0, 0), Point3(165, 330, 165), white);
+  box1 = make_shared<RotateY>(box1, 15);
+  box1 = make_shared<Translate>(box1, Vec3(265, 0, 295));
+
+  std::shared_ptr<Hittable> box2 =
+      std::make_shared<Box>(Point3(0, 0, 0), Point3(165, 165, 165), white);
+  box2 = make_shared<RotateY>(box2, -18);
+  box2 = make_shared<Translate>(box2, Vec3(130, 0, 65));
+
+  objects.Add(make_shared<ConstantMedium>(box1, 0.01, Color(0, 0, 0)));
+  objects.Add(make_shared<ConstantMedium>(box2, 0.01, Color(1, 1, 1)));
+
+  auto new_camera = std::make_shared<Camera>(
+      Point3(278, 278, -800), Point3(278, 278, 0), camera->v_up_, 40, 1.0,
+      camera->aperture_, camera->focus_dist_, Color(0, 0, 0), 0, 0);
+
+  camera = new_camera;
+
+  return objects;
+}
+
 int main(int argc, char** argv) {
   // Camera
   auto aspect_ratio = 16.0 / 9.0;
@@ -229,6 +267,7 @@ int main(int argc, char** argv) {
       {"Earth", Earth()},
       {"SampleLight", SampleLight(camera)},
       {"CornellBox", CornellBox(camera)},
+      {"CornellSmoke", CornellSmoke(camera)},
   };
 
   // Image
