@@ -8,7 +8,7 @@ Strictly follow the [Google C++ style guide](https://google.github.io/styleguide
 
 ## First week
 
-![](./doc/oneWeek.jpg)
+![](./doc/OneWeek.jpg)
 
 ## The next week
 
