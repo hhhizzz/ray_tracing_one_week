@@ -10,10 +10,9 @@ class Translate : public Hittable {
       : ptr(std::move(p)), offset(displacement) {}
 
   bool Hit(const Ray& r, double t_min, double t_max,
-                   HitRecord* rec) const override;
+           HitRecord* rec) const override;
 
-  bool BoundingBox(double time0, double time1,
-                           Aabb* output_box) const override;
+  bool BoundingBox(double time0, double time1, Aabb* output_box) const override;
 
  private:
   std::shared_ptr<Hittable> ptr;

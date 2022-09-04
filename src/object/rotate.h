@@ -7,10 +7,10 @@ class RotateY : public Hittable {
   RotateY(std::shared_ptr<Hittable> p, double angle);
 
   bool Hit(const Ray& r, double t_min, double t_max,
-                   HitRecord* rec) const override;
+           HitRecord* rec) const override;
 
   bool BoundingBox(double time0, double time1,
-                           Aabb* output_box) const override {
+                   Aabb* output_box) const override {
     *output_box = bbox_;
     return has_box_;
   }

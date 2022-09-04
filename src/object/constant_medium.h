@@ -19,10 +19,10 @@ class ConstantMedium : public Hittable {
         phase_function(std::make_shared<Isotropic>(c)) {}
 
   bool Hit(const Ray& r, double t_min, double t_max,
-                   HitRecord* rec) const override;
+           HitRecord* rec) const override;
 
   bool BoundingBox(double time0, double time1,
-                           Aabb* output_box) const override {
+                   Aabb* output_box) const override {
     return boundary->BoundingBox(time0, time1, output_box);
   }
 
