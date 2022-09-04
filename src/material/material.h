@@ -6,7 +6,8 @@ struct HitRecord;
 
 class Material {
  public:
-  [[nodiscard]] virtual Color Emitted(double u, double v, const Point3& p) const {
+  [[nodiscard]] virtual Color Emitted(double u, double v,
+                                      const Point3& p) const {
     return {0, 0, 0};
   }
   virtual bool Scatter(const Ray& r_in, const HitRecord& rec,
