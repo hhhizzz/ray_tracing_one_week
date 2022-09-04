@@ -1,7 +1,3 @@
-//
-// Created by Qiwei Huang on 2022/8/28.
-//
-
 #pragma once
 #include "material.h"
 

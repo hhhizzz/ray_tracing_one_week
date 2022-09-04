@@ -1,7 +1,3 @@
-//
-// Created by Qiwei Huang on 2022/8/31.
-//
-
 #pragma once
 
 #include "texture.h"
@@ -10,7 +6,7 @@
 class NoiseTexture : public Texture {
  public:
   NoiseTexture() = default;
-  NoiseTexture(double scale) : scale_(scale) {}
+  explicit NoiseTexture(double scale) : scale_(scale) {}
 
   [[nodiscard]] Color Value(double u, double v,
                             const Point3& p) const override {
@@ -20,7 +16,7 @@ class NoiseTexture : public Texture {
 
  private:
   Perlin noise_;
-  double scale_;
+  double scale_{};
 };
 
 #pragma endregion  // RAY_TRACING_ONE_WEEK_NOISETEXTURE_H

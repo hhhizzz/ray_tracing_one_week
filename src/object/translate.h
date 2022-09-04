@@ -1,17 +1,18 @@
 #pragma once
 
+#include <utility>
+
 #include "object/hittable.h"
 
 class Translate : public Hittable {
  public:
   Translate(std::shared_ptr<Hittable> p, const Vec3& displacement)
-      : ptr(p), offset(displacement) {}
+      : ptr(std::move(p)), offset(displacement) {}
 
-  virtual bool Hit(const Ray& r, double t_min, double t_max,
-                   HitRecord* rec) const override;
+  bool Hit(const Ray& r, double t_min, double t_max,
+           HitRecord* rec) const override;
 
-  virtual bool BoundingBox(double time0, double time1,
-                           Aabb* output_box) const override;
+  bool BoundingBox(double time0, double time1, Aabb* output_box) const override;
 
  private:
   std::shared_ptr<Hittable> ptr;
