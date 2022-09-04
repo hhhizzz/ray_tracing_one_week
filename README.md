@@ -6,7 +6,13 @@ Most code comes from [Ray Tracing in One Weekend](https://raytracing.github.io/b
 
 Strictly follow the [Google C++ style guide](https://google.github.io/styleguide/cppguide.html)
 
-![](./doc/image.jpg)
+## First week
+
+![](./doc/oneWeek.jpg)
+
+## The next week
+
+![](./doc/TheNextWeek.jpg)
 
 ## Build
 
@@ -32,3 +38,16 @@ SCENE=Earth ./ray_tracing
 # Modify the SPP to accelerate the processing
 SPP=100 ./ray_tracing
 ```
+
+## Available scenes
+
+- Random
+- Random with Time
+- Checker Texture
+- Two Spheres
+- Two Perlin Spheres
+- Earth
+- Simple Light
+- Cornell Box
+- Cornell Smoke
+- The Next Week
