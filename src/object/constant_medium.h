@@ -1,5 +1,7 @@
 #pragma once
 
+#include <utility>
+
 #include "material/isotropic.h"
 #include "object/hittable.h"
 
@@ -7,19 +9,19 @@ class ConstantMedium : public Hittable {
  public:
   ConstantMedium(std::shared_ptr<Hittable> b, double d,
                  std::shared_ptr<Texture> a)
-      : boundary(b),
+      : boundary(std::move(b)),
         neg_inv_density(-1 / d),
         phase_function(std::make_shared<Isotropic>(a)) {}
 
   ConstantMedium(std::shared_ptr<Hittable> b, double d, Color c)
-      : boundary(b),
+      : boundary(std::move(b)),
         neg_inv_density(-1 / d),
         phase_function(std::make_shared<Isotropic>(c)) {}
 
-  virtual bool Hit(const Ray& r, double t_min, double t_max,
+  bool Hit(const Ray& r, double t_min, double t_max,
                    HitRecord* rec) const override;
 
-  virtual bool BoundingBox(double time0, double time1,
+  bool BoundingBox(double time0, double time1,
                            Aabb* output_box) const override {
     return boundary->BoundingBox(time0, time1, output_box);
   }

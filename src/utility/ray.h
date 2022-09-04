@@ -19,6 +19,6 @@ class Ray {
  public:
   Point3 origin_;
   Vec3 direction_;
-  double time_;
+  double time_{};
 };
 #pragma endregion

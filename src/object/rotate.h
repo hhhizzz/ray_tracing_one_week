@@ -6,10 +6,10 @@ class RotateY : public Hittable {
  public:
   RotateY(std::shared_ptr<Hittable> p, double angle);
 
-  virtual bool Hit(const Ray& r, double t_min, double t_max,
+  bool Hit(const Ray& r, double t_min, double t_max,
                    HitRecord* rec) const override;
 
-  virtual bool BoundingBox(double time0, double time1,
+  bool BoundingBox(double time0, double time1,
                            Aabb* output_box) const override {
     *output_box = bbox_;
     return has_box_;
