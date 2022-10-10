@@ -13,3 +13,13 @@ add_executable(
         ray_tracing
         src/main.cpp
 )
+
+add_executable(
+        pi
+        src/monte_carlo/pi.cpp
+)
+
+add_executable(
+        integrate_x
+        src/monte_carlo/integrate_x_sq.cpp
+)

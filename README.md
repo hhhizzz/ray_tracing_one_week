@@ -37,6 +37,12 @@ SCENE=Earth ./ray_tracing
 
 # Modify the SPP to accelerate the processing
 SPP=100 ./ray_tracing
+
+# Calculate the PI
+./pi
+
+# Calculate the integration of X^2 from 0 to 2
+./integrate_x
 ```
 
 ## Available scenes
