@@ -3,6 +3,7 @@
 #include <memory>
 #include <vector>
 
+#include "camera.h"
 #include "hittable.h"
 
 using std::make_shared;
@@ -17,6 +18,7 @@ class HittableList : public Hittable {
            HitRecord* hit_record) const override;
   bool BoundingBox(double time0, double time1, Aabb* output_box) const override;
   std::vector<shared_ptr<Hittable>> objects_;
+  shared_ptr<Camera> camera_;
 };
 
 bool HittableList::Hit(const Ray& r, double t_min, double t_max,

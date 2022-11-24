@@ -50,7 +50,7 @@ Color RayColor(const Ray& r, const Color& background, const Hittable& world,
 }
 #pragma clang diagnostic pop
 
-HittableList RandomScene(bool has_time = true,
+HittableList RandomScene(shared_ptr<Camera> camera, bool has_time = true,
                          bool has_checker_texture = true) {
   HittableList boxes;
   HittableList world;
@@ -113,10 +113,12 @@ HittableList RandomScene(bool has_time = true,
   boxes.Add(make_shared<Sphere>(Point3(4, 1, 0), 1.0, material3));
 
   world.Add(make_shared<BvhNode>(boxes, 0, 1));
+
+  world.camera_ = camera;
   return world;
 }
 
-HittableList TwoSpheres() {
+HittableList TwoSpheres(shared_ptr<Camera> camera) {
   HittableList objects;
 
   auto checker =
@@ -126,10 +128,13 @@ HittableList TwoSpheres() {
                                   make_shared<Lambertian>(checker)));
   objects.Add(make_shared<Sphere>(Point3(0, 10, 0), 10,
                                   make_shared<Lambertian>(checker)));
+
+  objects.camera_ = camera;
+
   return objects;
 }
 
-HittableList TwoPerlinSpheres() {
+HittableList TwoPerlinSpheres(shared_ptr<Camera> camera) {
   HittableList objects;
 
   auto per_text = make_shared<NoiseTexture>(4);
@@ -137,14 +142,20 @@ HittableList TwoPerlinSpheres() {
                                   make_shared<Lambertian>(per_text)));
   objects.Add(make_shared<Sphere>(Point3(0, 2, 0), 2,
                                   make_shared<Lambertian>(per_text)));
+
+  objects.camera_ = camera;
   return objects;
 }
 
-HittableList Earth() {
+HittableList Earth(shared_ptr<Camera> camera) {
   auto earth_texture = make_shared<ImageTexture>("resources/earth-map.jpg");
   auto earth_surface = make_shared<Lambertian>(earth_texture);
   auto globe = make_shared<Sphere>(Point3(0, 0, 0), 2, earth_surface);
-  return HittableList(globe);
+  auto world = HittableList(globe);
+
+  world.camera_ = camera;
+
+  return world;
 }
 
 HittableList SampleLight(std::shared_ptr<Camera>& camera) {
@@ -163,7 +174,7 @@ HittableList SampleLight(std::shared_ptr<Camera>& camera) {
   Point3 look_at(0, 2, 0);
   auto aperture = 0.01;
 
-  camera =
+  objects.camera_ =
       make_shared<Camera>(look_from, look_at, camera->v_up_, camera->v_fov_,
                           camera->aspect_ratio_, aperture, camera->focus_dist_);
 
@@ -197,11 +208,9 @@ HittableList CornellBox(std::shared_ptr<Camera>& camera) {
   box2 = make_shared<Translate>(box2, Vec3(130, 0, 65));
   objects.Add(box2);
 
-  auto new_camera = std::make_shared<Camera>(
+  objects.camera_ = std::make_shared<Camera>(
       Point3(278, 278, -800), Point3(278, 278, 0), camera->v_up_, 40, 1.0,
       camera->aperture_, camera->focus_dist_, Color(0, 0, 0), 0, 0);
-
-  camera = new_camera;
 
   return objects;
 }
@@ -234,11 +243,9 @@ HittableList CornellSmoke(std::shared_ptr<Camera>& camera) {
   objects.Add(make_shared<ConstantMedium>(box1, 0.01, Color(0, 0, 0)));
   objects.Add(make_shared<ConstantMedium>(box2, 0.01, Color(1, 1, 1)));
 
-  auto new_camera = std::make_shared<Camera>(
+  objects.camera_ = std::make_shared<Camera>(
       Point3(278, 278, -800), Point3(278, 278, 0), camera->v_up_, 40, 1.0,
       camera->aperture_, camera->focus_dist_, Color(0, 0, 0), 0, 0);
-
-  camera = new_camera;
 
   return objects;
 }
@@ -317,12 +324,14 @@ HittableList TheNextWeek(std::shared_ptr<Camera>& camera) {
 }
 
 void Render(unsigned int i, unsigned int j, Vec3* fb, int image_width,
-            int image_height, const shared_ptr<Camera>& camera,
-            const Hittable& world, int max_depth, int samples_per_pixel) {
+            int image_height, const HittableList& world, int max_depth,
+            int samples_per_pixel) {
   if ((i >= image_width) || (j >= image_height)) {
     return;
   }
   Color pixel_color(0, 0, 0);
+  auto camera = world.camera_;
+
   for (int s = 0; s < samples_per_pixel; ++s) {
     auto u = (i + RandomDouble()) / (image_width - 1);
     auto v = (j + RandomDouble()) / (image_height - 1);
@@ -353,12 +362,12 @@ int main(int argc, char** argv) {
 
   // World
   auto world_map = std::map<std::string, HittableList>{
-      {"Random", RandomScene(false, false)},
-      {"WithTime", RandomScene(true, false)},
-      {"CheckerTexture", RandomScene(true, true)},
-      {"TwoSpheres", TwoSpheres()},
-      {"TwoPerlinSpheres", TwoPerlinSpheres()},
-      {"Earth", Earth()},
+      {"Random", RandomScene(camera, false, false)},
+      {"WithTime", RandomScene(camera, true, false)},
+      {"CheckerTexture", RandomScene(camera, true, true)},
+      {"TwoSpheres", TwoSpheres(camera)},
+      {"TwoPerlinSpheres", TwoPerlinSpheres(camera)},
+      {"Earth", Earth(camera)},
       {"SampleLight", SampleLight(camera)},
       {"CornellBox", CornellBox(camera)},
       {"CornellSmoke", CornellSmoke(camera)},
@@ -366,23 +375,20 @@ int main(int argc, char** argv) {
   };
 
   // Image
-  aspect_ratio = camera->aspect_ratio_;
   int image_width = 1600;
-  int image_height = static_cast<int>(image_width / aspect_ratio);
   int samples_per_pixel = 500;
   const int max_depth = 50;
   std::string scene_name = "Random";
 
   // Read Environment Variables
-  if (const char* env_p = std::getenv("IMAGE_WIDTH")) {
-    image_width = std::stoi(env_p);
-    image_height = static_cast<int>(image_width / aspect_ratio);
-  }
   if (const char* env_p = std::getenv("SPP")) {
     samples_per_pixel = std::stoi(env_p);
   }
   if (const char* env_p = std::getenv("SCENE")) {
     scene_name = env_p;
+  }
+  if (const char* env_p = std::getenv("IMAGE_WIDTH")) {
+    image_width = std::stoi(env_p);
   }
 
   if (world_map.find(scene_name) == world_map.end()) {
@@ -391,6 +397,10 @@ int main(int argc, char** argv) {
   }
   std::cerr << "Rendering Scene:  " << scene_name << std::endl;
   auto world = world_map[scene_name];
+
+  camera = world.camera_;
+  aspect_ratio = camera->aspect_ratio_;
+  int image_height = static_cast<int>(image_width / aspect_ratio);
 
   // Output
   std::ofstream ofs(scene_name + ".ppm");
@@ -406,7 +416,7 @@ int main(int argc, char** argv) {
   for (int j = image_height - 1; j >= 0; --j) {
     std::cerr << "\rScanline's remaining:" << j << ' ' << std::flush;
     for (int i = 0; i < image_width; ++i) {
-      Render(i, j, fb, image_width, image_height, camera, world, max_depth,
+      Render(i, j, fb, image_width, image_height, world, max_depth,
              samples_per_pixel);
     }
   }
