@@ -6,7 +6,7 @@ endif()
 
 project(ray_tracing_one_week LANGUAGES CXX CUDA)
 
-set(CMAKE_CXX_STANDARD 20)
+set(CMAKE_CXX_STANDARD 17)
 
 include_directories(src)
 include_directories(third-party)
@@ -15,7 +15,7 @@ FILE(COPY resources/earth-map.jpg DESTINATION "${CMAKE_BINARY_DIR}/resources")
 
 add_executable(
         ray_tracing
-        src/main.cpp
+        src/main.cu
 )
 
 target_compile_features(ray_tracing PUBLIC cxx_std_17)

@@ -316,6 +316,27 @@ HittableList TheNextWeek(std::shared_ptr<Camera>& camera) {
   return objects;
 }
 
+void Render(unsigned int i, unsigned int j, Vec3* fb, int image_width,
+            int image_height, const shared_ptr<Camera>& camera,
+            const Hittable& world, int max_depth, int samples_per_pixel) {
+  if ((i >= image_width) || (j >= image_height)) {
+    return;
+  }
+  Color pixel_color(0, 0, 0);
+  for (int s = 0; s < samples_per_pixel; ++s) {
+    auto u = (i + RandomDouble()) / (image_width - 1);
+    auto v = (j + RandomDouble()) / (image_height - 1);
+
+    Ray ray = camera->GetRay(u, v);
+    auto background = camera->background_;
+
+    pixel_color += RayColor(ray, background, world, max_depth);
+  }
+
+  unsigned int pixel_index = j * image_width + i;
+  fb[pixel_index] = pixel_color;
+}
+
 int main(int argc, char** argv) {
   // Camera
   auto aspect_ratio = 16.0 / 9.0;
@@ -377,20 +398,29 @@ int main(int argc, char** argv) {
   // Render
   ofs << "P3\n" << image_width << ' ' << image_height << "\n255\n";
 
+  auto* fb = new Color[image_width * image_height];
+
+  clock_t start, stop;
+  start = clock();
+
   for (int j = image_height - 1; j >= 0; --j) {
     std::cerr << "\rScanline's remaining:" << j << ' ' << std::flush;
     for (int i = 0; i < image_width; ++i) {
-      Color pixel_color(0, 0, 0);
-      for (int s = 0; s < samples_per_pixel; ++s) {
-        auto u = (i + RandomDouble()) / (image_width - 1);
-        auto v = (j + RandomDouble()) / (image_height - 1);
-
-        Ray ray = camera->GetRay(u, v);
-        auto background = camera->background_;
-        pixel_color += RayColor(ray, background, world, max_depth);
-      }
-      write_color(ofs, pixel_color, samples_per_pixel);
+      Render(i, j, fb, image_width, image_height, camera, world, max_depth,
+             samples_per_pixel);
     }
   }
+
+  stop = clock();
+  double timer_seconds = ((double)(stop - start)) / CLOCKS_PER_SEC;
+  std::cerr << std::endl << "Took " << timer_seconds << " seconds.\n";
+
+  for (int j = image_height - 1; j >= 0; --j) {
+    for (int i = 0; i < image_width; ++i) {
+      auto pixel_index = j * image_width + i;
+      write_color(ofs, fb[pixel_index], samples_per_pixel);
+    }
+  }
+
   std::cerr << "\nDone.\n";
 }
