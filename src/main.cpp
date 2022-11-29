@@ -2,6 +2,7 @@
 #include <iomanip>
 #include <iostream>
 #include <map>
+#include <utility>
 
 #include "material/diffuse_light.h"
 #include "material/solid_color.h"
@@ -114,7 +115,7 @@ HittableList RandomScene(shared_ptr<Camera> camera, bool has_time = true,
 
   world.Add(make_shared<BvhNode>(boxes, 0, 1));
 
-  world.camera_ = camera;
+  world.camera_ = std::move(camera);
   return world;
 }
 
@@ -129,7 +130,7 @@ HittableList TwoSpheres(shared_ptr<Camera> camera) {
   objects.Add(make_shared<Sphere>(Point3(0, 10, 0), 10,
                                   make_shared<Lambertian>(checker)));
 
-  objects.camera_ = camera;
+  objects.camera_ = std::move(camera);
 
   return objects;
 }
@@ -143,7 +144,7 @@ HittableList TwoPerlinSpheres(shared_ptr<Camera> camera) {
   objects.Add(make_shared<Sphere>(Point3(0, 2, 0), 2,
                                   make_shared<Lambertian>(per_text)));
 
-  objects.camera_ = camera;
+  objects.camera_ = std::move(camera);
   return objects;
 }
 
@@ -153,7 +154,7 @@ HittableList Earth(shared_ptr<Camera> camera) {
   auto globe = make_shared<Sphere>(Point3(0, 0, 0), 2, earth_surface);
   auto world = HittableList(globe);
 
-  world.camera_ = camera;
+  world.camera_ = std::move(camera);
 
   return world;
 }
